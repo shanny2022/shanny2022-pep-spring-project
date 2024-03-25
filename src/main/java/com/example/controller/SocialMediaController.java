@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
-
 @RestController
 public class SocialMediaController {
 
@@ -22,18 +20,33 @@ public class SocialMediaController {
     private MessageService messageService;
 
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody Account account) {
-        return ResponseEntity.ok(accountService.register(account));
+    public ResponseEntity<Account> register(@RequestBody Account account) {
+        Account registeredAccount = accountService.register(account);
+        if (registeredAccount != null) {
+            return ResponseEntity.ok(registeredAccount);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@RequestBody Account account) {
-        return ResponseEntity.ok(accountService.login(account));
+    public ResponseEntity<Account> login(@RequestBody Account account) {
+        Account loggedInAccount = accountService.login(account);
+        if (loggedInAccount != null) {
+            return ResponseEntity.ok(loggedInAccount);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping("/messages")
-    public ResponseEntity<Object> postMessage(@RequestBody Message message) {
-        return ResponseEntity.ok(messageService.postMessage(message));
+    public ResponseEntity<Message> postMessage(@RequestBody Message message) {
+        Message postedMessage = messageService.postMessage(message);
+        if (postedMessage != null) {
+            return ResponseEntity.ok(postedMessage);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/messages")

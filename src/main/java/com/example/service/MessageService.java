@@ -33,15 +33,15 @@ public class MessageService {
         messageRepository.deleteById(id);
     }
 
-    public Object postMessage(Message message) {
+    public Message postMessage(Message message) {
         return null;
     }
 
-    public Object updateMessage(int message_id, Message message) {
+    public Message updateMessage(int message_id, Message message) {
         return null;
     }
 
-    public Object getMessagesByUser(int account_id) {
+    public Message getMessagesByUser(int account_id) {
         return null;
     }
 }

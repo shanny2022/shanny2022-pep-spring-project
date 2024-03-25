@@ -35,11 +35,11 @@ public class AccountService {
         accountRepository.deleteById(id);
     }
 
-	public Object register(Account account) {
+	public Account register(Account account) {
 		return null;
 	}
 
-    public Object login(Account account) {
+    public Account login(Account account) {
         return null;
     }
 }
