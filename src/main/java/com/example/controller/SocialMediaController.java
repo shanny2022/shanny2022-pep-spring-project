@@ -5,10 +5,12 @@ import com.example.entity.Message;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class SocialMediaController {
@@ -16,28 +18,31 @@ public class SocialMediaController {
     @Autowired
     private AccountService accountService;
 
-    @Autowired
-    private MessageService messageService;
-
-    @PostMapping("/register")
-    public ResponseEntity<Account> register(@RequestBody Account account) {
-        Account registeredAccount = accountService.register(account);
-        if (registeredAccount != null) {
-            return ResponseEntity.ok(registeredAccount);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
     @PostMapping("/login")
-    public ResponseEntity<Account> login(@RequestBody Account account) {
-        Account loggedInAccount = accountService.login(account);
-        if (loggedInAccount != null) {
-            return ResponseEntity.ok(loggedInAccount);
+    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+        String username = credentials.get("username");
+        String password = credentials.get("password");
+        Account account = accountService.login(username, password);
+        if (account != null) {
+            return ResponseEntity.ok(account);
         } else {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+
+@PostMapping("/register")
+public ResponseEntity<Account> register(@RequestBody Account account) {
+    Account registeredAccount = accountService.register(account);
+    if (registeredAccount != null) {
+        return ResponseEntity.ok(registeredAccount);
+    } else {
+        return ResponseEntity.badRequest().build();
+    }
+}
+
+@Autowired
+private MessageService messageService;
+
 
     @PostMapping("/messages")
     public ResponseEntity<Message> postMessage(@RequestBody Message message) {
