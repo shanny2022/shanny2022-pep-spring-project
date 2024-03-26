@@ -16,7 +16,7 @@ import java.util.Map;
 public class SocialMediaController {
 
     @Autowired
-    private AccountService accountService;
+    public AccountService accountService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
@@ -41,7 +41,7 @@ public ResponseEntity<Account> register(@RequestBody Account account) {
 }
 
 @Autowired
-private MessageService messageService;
+public MessageService messageService;
 
 
     @PostMapping("/messages")

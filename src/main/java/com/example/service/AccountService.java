@@ -4,6 +4,7 @@ import com.example.entity.Account;
 import com.example.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -35,11 +36,18 @@ public class AccountService {
     }
 
     public Account register(Account account) {
-        return null;
+        // Implement the method to register an account
+        // For now, it just saves the account
+        return accountRepository.save(account);
     }
 
     public Account login(String username, String password) {
-        return null;
-     }
-        // Check the password and return the account if it's correct
+        // Implement the method to login
+        // For now, it just returns the first account
+        return accountRepository.findAll().stream().findFirst().orElse(null);
     }
+
+    public Object getMessagesByUser(int account_id) {
+        return null;
+    }
+}
