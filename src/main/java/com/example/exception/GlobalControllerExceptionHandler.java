@@ -14,3 +14,4 @@ class GlobalControllerExceptionHandler {
         // Nothing to do
     }
 }
+
