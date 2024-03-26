@@ -6,6 +6,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MessageRepository extends JpaRepository<Message, Integer> {
-   Optional<Message> findBymessage_Id(Integer message_id);
-   void DeleteMessageByMessageIdTest(Integer message_id);
+   Optional<Message> findByMessage_Id(Integer message_id);
+   void deleteByMessage_Id(Integer message_id);
 }
