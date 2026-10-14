@@ -71,8 +71,11 @@ public class MessageService {
         ){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Message");
         }else{
-            messageRepository.updateMessageById(id, message.getMessage_text());
-            return 1;
+            int updated = messageRepository.updateMessageById(id, message.getMessage_text());
+            if (updated == 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Message");
+            }
+            return updated;
         }
     }
 
