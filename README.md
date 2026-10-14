@@ -1,5 +1,24 @@
 # Project: Spring Social media blog API
 
+## Run locally
+
+Install JDK 11 and Maven, then run:
+
+```sh
+mvn test
+mvn spring-boot:run
+```
+
+The API listens at `http://localhost:8080`. To package an executable jar:
+
+```sh
+mvn clean package
+java -jar target/Challenges-1.1.jar
+```
+
+See [API examples](docs/API.md), [database behavior](docs/DATABASE.md), and
+[troubleshooting](docs/TROUBLESHOOTING.md).
+
 ## Background 
 
 Full-stack applications are typically concerned with both a front end, that displays information to the user and takes in input, and a backend, that manages persisted information.
