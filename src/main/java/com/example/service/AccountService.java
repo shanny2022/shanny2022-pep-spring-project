@@ -61,10 +61,10 @@ public class AccountService {
         }
         Account possibleDuplicate = findUserByUsername(account.getUsername());
 
-        if(possibleDuplicate == null && account.getPassword().length()>=4 && !account.getUsername().isEmpty()){
+        if(possibleDuplicate == null && account.getPassword().length()>=4 && !account.getUsername().isBlank()){
             return accountRepository.save(account);
         }
-        else if(account.getPassword().length() < 4 || account.getUsername().isEmpty()){
+        else if(account.getPassword().length() < 4 || account.getUsername().isBlank()){
             System.out.print("Inside empty/short");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be at least 4 characters long");
         }
