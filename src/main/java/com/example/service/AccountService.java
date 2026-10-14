@@ -56,6 +56,9 @@ public class AccountService {
     }
 
     public Account registerUser(Account account){
+        if (account == null || account.getUsername() == null || account.getPassword() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username and password are required");
+        }
         Account possibleDuplicate = findUserByUsername(account.getUsername());
 
         if(possibleDuplicate == null && account.getPassword().length()>=4 && !account.getUsername().isEmpty()){
