@@ -33,7 +33,8 @@ public class MessageService {
     }
 
     public Message postMessage(Message message){
-        if(message.getMessage_text().isEmpty()
+        if(message == null || message.getMessage_text() == null
+        || message.getMessage_text().isEmpty()
         || message.getMessage_text().length() > 255
         || accountService.findUser(message.getPosted_by()) == null
         ){
@@ -71,7 +72,8 @@ public class MessageService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Message");
         }
 
-        if(message.getMessage_text().isEmpty()
+        if(message == null || message.getMessage_text() == null
+        || message.getMessage_text().isEmpty()
         || message.getMessage_text().length() > 255
         ){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Message");
