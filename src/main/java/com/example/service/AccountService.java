@@ -68,7 +68,7 @@ public class AccountService {
         if (findUserByUsername(account.getUsername()) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
         }
-        return accountRepository.save(account);
+        return accountRepository.save(new Account(account.getUsername(), account.getPassword()));
     }
 
     public Account login(Account account){
