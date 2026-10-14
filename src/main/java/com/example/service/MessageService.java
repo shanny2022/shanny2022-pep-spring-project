@@ -41,7 +41,7 @@ public class MessageService {
         ){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Message");
         }else{
-            return messageRepository.save(message);
+            return messageRepository.save(new Message(message.getPosted_by(), message.getMessage_text(), message.getTime_posted_epoch()));
         }
     }
 
