@@ -62,18 +62,13 @@ public class AccountService {
         if (account.getUsername().length() > 255 || account.getPassword().length() > 255) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Credentials must not exceed 255 characters");
         }
-        Account possibleDuplicate = findUserByUsername(account.getUsername());
-
-        if(possibleDuplicate == null && account.getPassword().length()>=4 && !account.getUsername().isBlank()){
-            return accountRepository.save(account);
+        if (account.getPassword().length() < 4 || account.getUsername().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username must not be blank and password must have at least 4 characters");
         }
-        else if(account.getPassword().length() < 4 || account.getUsername().isBlank()){
-            System.out.print("Inside empty/short");
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password must be at least 4 characters long");
+        if (findUserByUsername(account.getUsername()) != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
         }
-        else{
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Password must be at least 4 characters long");
-        }
+        return accountRepository.save(account);
     }
 
     public Account login(Account account){
