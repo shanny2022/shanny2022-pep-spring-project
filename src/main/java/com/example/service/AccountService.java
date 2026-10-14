@@ -72,6 +72,9 @@ public class AccountService {
     }
 
     public Account login(Account account){
+        if (account == null || account.getUsername() == null || account.getPassword() == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
         Account logged = findUserByUsernameAndPassword(account.getUsername(), account.getPassword());
         if( logged != null){
             return logged;
