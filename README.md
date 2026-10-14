@@ -1,45 +1,26 @@
-# Project: Spring Social media blog API
+# Spring Social Media Blog API
 
-## Run locally
+## Background
 
-Install JDK 11 and Maven, then run:
+I built this project as a Java backend for a micro-blogging application using Spring Boot. It manages user accounts and messages, supporting registration, login, and creating, viewing, updating, and deleting posts.
 
-```sh
-mvn test
-mvn spring-boot:run
-```
+I use Spring MVC to handle HTTP requests and Spring Data JPA to manage database operations. My application also allows users to retrieve all messages or view messages posted by a specific account.
 
-The API listens at `http://localhost:8080`. To package an executable jar:
+## Database Tables
 
-```sh
-mvn clean package
-java -jar target/Challenges-1.1.jar
-```
-
-See [API examples](docs/API.md), [database behavior](docs/DATABASE.md), and
-[troubleshooting](docs/TROUBLESHOOTING.md).
-
-## Background 
-
-Full-stack applications are typically concerned with both a front end, that displays information to the user and takes in input, and a backend, that manages persisted information.
-
-This project will be a backend for a hypothetical social media app, where we must manage our users’ accounts as well as any messages that they submit to the application. However, the functionality for this project will leverage a popular web application framework for Java known as Spring. The Spring framework allows for automatic injection and configuration of many features, including data persitence, endpoints and conventional data manipulation logic (CRUD operations).
-
-In our hypothetical micro-blogging or messaging app, any user should be able to see all of the messages posted to the site, or they can see the messages posted by a particular user. In either case, we require a backend which is able to deliver the data needed to display this information as well as process actions like logins, registrations, message creations, message updates, and message deletions.
-
-## Database Tables 
-
-The following tables will be initialized in your project's built-in database upon startup using the configuration details in the application.properties file and the provided SQL script.
+My database initializes at startup using the SQL script and configuration in `application.properties`.
 
 ### Account
-```
+
+```sql
 account_id integer primary key auto_increment,
 username varchar(255) not null unique,
 password varchar(255)
 ```
 
 ### Message
-```
+
+```sql
 message_id integer primary key auto_increment,
 posted_by integer,
 message_text varchar(255),
@@ -47,79 +28,83 @@ time_posted_epoch long,
 foreign key (posted_by) references Account(account_id)
 ```
 
-# Spring Technical Requirement
+## Spring Architecture
 
-## Project must leverage the Spring Boot Framework
+I organize the backend into controller, service, and repository layers:
 
-Java classes have been provided, but your entire project MUST leverage the Spring framework.
-In addition to functional test cases, "SpringTest" will verify that you have leveraged the Spring framework, Spring Boot, Spring MVC, and Spring Data.
-SpringTest will verify the following
+- `SocialMediaController` handles API requests and responses.
+- `AccountService` handles account registration and login validation.
+- `MessageService` handles message validation and operations.
+- `AccountRepository` and `MessageRepository` extend `JpaRepository` for their corresponding entities.
 
- - That you have, by any means, have a bean for the AccountService, MessageService, AccountRepository, MessageRepository, and SocialMediaController classes
- - That AccountRepository and MessageRepository are working JPARepositories based on their corresponding Account and Message entities
- - That your Spring Boot app leverages MVC by checking for Spring's default error message structure.
- 
-The app will already be a Spring Boot app with a valid application.properties and valid database entities at the start.
+I use Spring annotations and dependency injection to connect these components. The project requirements include functional tests and a `SpringTest` that checks bean configuration, JPA repositories, and Spring MVC’s default error response structure.
 
-# User Stories
+## API Endpoints
 
-## 1: Our API should be able to process new User registrations.
+I use `http://localhost:8080` as the base URL.
 
-As a user, I should be able to create a new Account on the endpoint POST localhost:8080/register. The body will contain a representation of a JSON Account, but will not contain an account_id.
+### 1. Register an Account
 
-- The registration will be successful if and only if the username is not blank, the password is at least 4 characters long, and an Account with that username does not already exist. If all these conditions are met, the response body should contain a JSON of the Account, including its account_id. The response status should be 200 OK, which is the default. The new account should be persisted to the database.
-- If the registration is not successful due to a duplicate username, the response status should be 409. (Conflict)
-- If the registration is not successful for some other reason, the response status should be 400. (Client error)
+`POST /register`
 
-## 2: Our API should be able to process User logins.
+I accept an account as JSON without an `account_id`. I require a nonblank username, a password containing at least four characters, and a username that is not already registered.
 
-As a user, I should be able to verify my login on the endpoint POST localhost:8080/login. The request body will contain a JSON representation of an Account.
+- **200 OK:** I save and return the account, including its generated `account_id`.
+- **409 Conflict:** The username already exists.
+- **400 Bad Request:** Other registration validation fails.
 
-- The login will be successful if and only if the username and password provided in the request body JSON match a real account existing on the database. If successful, the response body should contain a JSON of the account in the response body, including its account_id. The response status should be 200 OK, which is the default.
-- If the login is not successful, the response status should be 401. (Unauthorized)
+### 2. Log In
 
+`POST /login`
 
-## 3: Our API should be able to process the creation of new messages.
+I check whether the submitted username and password match an existing account.
 
-As a user, I should be able to submit a new post on the endpoint POST localhost:8080/messages. The request body will contain a JSON representation of a message, which should be persisted to the database, but will not contain a message_id.
+- **200 OK:** I return the matching account as JSON, including its `account_id`.
+- **401 Unauthorized:** The credentials do not match an existing account.
 
-- The creation of the message will be successful if and only if the message_text is not blank, is not over 255 characters, and posted_by refers to a real, existing user. If successful, the response body should contain a JSON of the message, including its message_id. The response status should be 200, which is the default. The new message should be persisted to the database.
-- If the creation of the message is not successful, the response status should be 400. (Client error)
+### 3. Create a Message
 
-## 4: Our API should be able to retrieve all messages.
+`POST /messages`
 
-As a user, I should be able to submit a GET request on the endpoint GET localhost:8080/messages.
+I accept a message as JSON without a `message_id`. I require nonblank `message_text` containing no more than 255 characters and a `posted_by` value that identifies an existing account.
 
-- The response body should contain a JSON representation of a list containing all messages retrieved from the database. It is expected for the list to simply be empty if there are no messages. The response status should always be 200, which is the default.
+- **200 OK:** I save and return the message, including its generated `message_id`.
+- **400 Bad Request:** Message validation fails.
 
-## 5: Our API should be able to retrieve a message by its ID.
+### 4. Retrieve All Messages
 
-As a user, I should be able to submit a GET request on the endpoint GET localhost:8080/messages/{message_id}.
+`GET /messages`
 
-- The response body should contain a JSON representation of the message identified by the message_id. It is expected for the response body to simply be empty if there is no such message. The response status should always be 200, which is the default.
+I return all stored messages as a JSON array with **200 OK**. If no messages exist, I return an empty array.
 
-## 6: Our API should be able to delete a message identified by a message ID.
+### 5. Retrieve a Message by ID
 
-As a User, I should be able to submit a DELETE request on the endpoint DELETE localhost:8080/messages/{message_id}.
+`GET /messages/{message_id}`
 
-- The deletion of an existing message should remove an existing message from the database. If the message existed, the response body should contain the number of rows updated (1). The response status should be 200, which is the default.
-- If the message did not exist, the response status should be 200, but the response body should be empty. This is because the DELETE verb is intended to be idempotent, ie, multiple calls to the DELETE endpoint should respond with the same type of response.
+I return the matching message as JSON with **200 OK**. If the message does not exist, I return an empty response body with **200 OK**.
 
-## 7: Our API should be able to update a message text identified by a message ID.
+### 6. Delete a Message
 
-As a user, I should be able to submit a PATCH request on the endpoint PATCH localhost:8080/messages/{message_id}. The request body should contain a new message_text values to replace the message identified by message_id. The request body can not be guaranteed to contain any other information.
+`DELETE /messages/{message_id}`
 
-- The update of a message should be successful if and only if the message id already exists and the new message_text is not blank and is not over 255 characters. If the update is successful, the response body should contain the number of rows updated (1), and the response status should be 200, which is the default. The message existing on the database should have the updated message_text.
-- If the update of the message is not successful for any reason, the response status should be 400. (Client error)
+I remove the matching message from the database.
 
-## 8: Our API should be able to retrieve all messages written by a particular user.
+- **200 OK** with a response body of `1`: I deleted one message.
+- **200 OK** with an empty response body: The message did not exist.
 
-As a user, I should be able to submit a GET request on the endpoint GET localhost:8080/accounts/{account_id}/messages.
+Repeating the request leaves the message deleted.
 
-- The response body should contain a JSON representation of a list containing all messages posted by a particular user, which is retrieved from the database. It is expected for the list to simply be empty if there are no messages. The response status should always be 200, which is the default.
+### 7. Update Message Text
 
-## 9: The Project utilizes the Spring Framework.
+`PATCH /messages/{message_id}`
 
-- The project was created leveraging the spring framework, including dependency injection, autowire functionality and/or Spring annotations.
+I accept a JSON body containing the replacement `message_text`. I require an existing message ID and nonblank text containing no more than 255 characters. Only the message text is updated.
 
-# Good luck!
+- **200 OK** with a response body of `1`: I updated one message.
+- **400 Bad Request:** The message does not exist or the new text is invalid.
+
+### 8. Retrieve Messages by Account
+
+`GET /accounts/{account_id}/messages`
+
+I return the account’s messages as a JSON array with **200 OK**. If no matching messages exist, I return an empty array.
