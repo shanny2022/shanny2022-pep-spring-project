@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping
 public class SocialMediaController {
 
-    MessageService messageService;
-    AccountService accountService;
+    private final MessageService messageService;
+    private final AccountService accountService;
 
     @Autowired
-    private SocialMediaController(MessageService messageService, AccountService accountService){
+    public SocialMediaController(MessageService messageService, AccountService accountService){
         this.messageService = messageService;
         this.accountService = accountService;
     }
