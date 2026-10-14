@@ -59,6 +59,9 @@ public class AccountService {
         if (account == null || account.getUsername() == null || account.getPassword() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username and password are required");
         }
+        if (account.getUsername().length() > 255 || account.getPassword().length() > 255) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Credentials must not exceed 255 characters");
+        }
         Account possibleDuplicate = findUserByUsername(account.getUsername());
 
         if(possibleDuplicate == null && account.getPassword().length()>=4 && !account.getUsername().isBlank()){
