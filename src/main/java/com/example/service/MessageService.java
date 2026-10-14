@@ -43,12 +43,7 @@ public class MessageService {
     }
 
     public Message findMessageById(int Id) {
-        Optional<Message> messageOptional = messageRepository.findById(Id);
-        if(messageOptional.isPresent()){
-            Message message = messageOptional.get();
-            return message;
-        }
-        return null;
+        return messageRepository.findById(Id).orElse(null);
     }
 
     public Integer deleteMessageByMessageId(int Id){
