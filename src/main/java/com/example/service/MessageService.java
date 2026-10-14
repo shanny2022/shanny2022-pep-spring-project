@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.example.entity.Message;
-import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
 
 import java.util.List;
@@ -17,14 +16,12 @@ import java.util.Optional;
 @Transactional
 public class MessageService {
 
-    public MessageRepository messageRepository;
-    public AccountRepository accountRepository;
-    public AccountService accountService;
+    private final MessageRepository messageRepository;
+    private final AccountService accountService;
 
     @Autowired
     public MessageService(MessageRepository messageRepository, AccountService accountService){
         this.messageRepository = messageRepository;
-        // this.accountRepository = accountRepository;
         this.accountService = accountService;
     }
 
