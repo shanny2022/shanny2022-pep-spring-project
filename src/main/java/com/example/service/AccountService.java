@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class AccountService {
-    public AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
     public AccountService(AccountRepository accountRepository){
