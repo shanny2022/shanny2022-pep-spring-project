@@ -36,6 +36,7 @@ public class MessageService {
         if(message == null || message.getMessage_text() == null
         || message.getMessage_text().isBlank()
         || message.getMessage_text().length() > 255
+        || message.getPosted_by() == null
         || accountService.findUser(message.getPosted_by()) == null
         ){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid Message");
