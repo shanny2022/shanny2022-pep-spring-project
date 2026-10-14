@@ -21,4 +21,8 @@ public interface MessageRepository extends JpaRepository<Message, Integer>{
     @Query("UPDATE Message m SET m.message_text = ?2 WHERE m.message_id = ?1")
     public int updateMessageById(int id, String text);
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("DELETE FROM Message m WHERE m.message_id = ?1")
+    int deleteMessageById(int id);
+
 }

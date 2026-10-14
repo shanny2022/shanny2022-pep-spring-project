@@ -10,7 +10,6 @@ import com.example.entity.Message;
 import com.example.repository.MessageRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -47,12 +46,8 @@ public class MessageService {
     }
 
     public Integer deleteMessageByMessageId(int Id){
-        Optional<Message> messageOptional = messageRepository.findById(Id);
-        if(messageOptional.isPresent()){
-            messageRepository.deleteById(Id);
-            return 1; /* I should make custom sql in repository to return an int (which would give number of updated rows)*/
-        }
-        return null;
+        int deleted = messageRepository.deleteMessageById(Id);
+        return deleted == 0 ? null : deleted;
     }
 
     public List<Message> getAllMessagesByPostedBy(int id){
